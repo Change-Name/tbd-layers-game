@@ -18,14 +18,15 @@ fn add_people(mut commands: Commands) {
 }
 
 fn greet_people(
-    time: Res<Time>, 
-    mut timer: ResMut<GreetTimer>, 
-    _person: &Person, 
-    name: &Name
-    ) {
-        timer.0.tick(time.delta_seconds);
-        if timer.0.finished {
+    time: Res<Time>,
+    mut timer: ResMut<GreetTimer>,
+    mut query: Query<(&Person, &Name)>,
+) {
+    timer.0.tick(time.delta_seconds);
+    if timer.0.finished {
+        for (_person, name) in &mut query.iter() {
             println!("Hello, {}!", name.0);
+        }
     }
 }
 
@@ -33,8 +34,7 @@ pub struct HelloPlugin;
 
 impl Plugin for HelloPlugin {
     fn build(&self, app: &mut AppBuilder) {
-        app
-            .add_resource(GreetTimer(Timer::from_seconds(2.0, true)))
+        app.add_resource(GreetTimer(Timer::from_seconds(2.0, true)))
             .add_startup_system(add_people.system())
             .add_system(greet_people.system());
     }
