@@ -6,12 +6,9 @@ fn main() {
         .run();
 }
 
-fn hi() {
-    println!("Hi!");
-}
-
 struct Person;
 struct Name(String);
+struct GreetTimer(Timer);
 
 fn add_people(mut commands: Commands) {
     commands
@@ -20,8 +17,11 @@ fn add_people(mut commands: Commands) {
         .spawn((Person, Name("Third".to_string())));
 }
 
-fn greet_people(_person: &Person, name: &Name) {
-    println!("Hello, {}!", name.0);
+fn greet_people(time: Res<Time>, mut timer: ResMut<GreetTimer>, _person: &Person, name: &Name) {
+    timer.0.tick(time.delta_seconds);
+    if timer.0.finished {
+        println!("Hello, {}!", name.0);
+    }
 }
 
 pub struct HelloPlugin;
@@ -29,8 +29,8 @@ pub struct HelloPlugin;
 impl Plugin for HelloPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
+            .add_resource(GreetTimer(Timer::from_seconds(2.0, true)))
             .add_startup_system(add_people.system())
-            .add_system(hi.system())
             .add_system(greet_people.system());
     }
 }
