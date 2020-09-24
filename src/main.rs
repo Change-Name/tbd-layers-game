@@ -1,3 +1,4 @@
+//! This part of project is only testing of Bevy system
 use bevy::prelude::*;
 fn main() {
     App::build()
