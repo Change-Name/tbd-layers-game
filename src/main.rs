@@ -17,10 +17,15 @@ fn add_people(mut commands: Commands) {
         .spawn((Person, Name("Third".to_string())));
 }
 
-fn greet_people(time: Res<Time>, mut timer: ResMut<GreetTimer>, _person: &Person, name: &Name) {
-    timer.0.tick(time.delta_seconds);
-    if timer.0.finished {
-        println!("Hello, {}!", name.0);
+fn greet_people(
+    time: Res<Time>, 
+    mut timer: ResMut<GreetTimer>, 
+    _person: &Person, 
+    name: &Name
+    ) {
+        timer.0.tick(time.delta_seconds);
+        if timer.0.finished {
+            println!("Hello, {}!", name.0);
     }
 }
 
